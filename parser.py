@@ -5,11 +5,11 @@ prev_result_comb = {}
 prev_results_calc = {}
 single_prob = np.zeros((54))
 object_matrix = np.zeros((54,54))
-@lru_cache(true)
+
 def calc(theta,obs):
     global object_matrix
     listToStr = ' '.join([str(s) for s in obs])
-    listToStr += str(theta)
+    listToStr += ' '+str(theta)
     if listToStr in prev_results_calc:
         return prev_results_calc[listToStr]
     if len(obs) == 0:
@@ -19,9 +19,11 @@ def calc(theta,obs):
     sum = 0
     for i in obs:
         sum += object_matrix[theta][i]
+    
     multip = sum* single_prob[theta]
     
     res = comb(obs)
+    
     if res == 0:
         prev_results_calc[listToStr] = 0
         return 0
@@ -140,8 +142,9 @@ def main():
             all_sum += k
     for i in range(len(single_prob)):
         single_prob[i] = single_prob[i]/all_sum
+   
     overall = []
-    for i in range(3):
+    for i in range(1000):
         first_item = random.randint(0, 53)
         item_number = random.randint(5,20)
         #print(first_item)
@@ -150,9 +153,10 @@ def main():
         while(k<item_number):
             random_item = random.randint(0,53)
             prob_of_random_item = calc(random_item,existing)
-            print(k,prob_of_random_item,existing,random_item)
+            
+            # print(k,prob_of_random_item,existing,random_item)
             if prob_of_random_item >random.random():
-                existing.append(random_item)
+                existing = [random_item]+existing
                 k+=1
             else:
                 continue
@@ -166,20 +170,22 @@ def main():
     
     for i in cate:
         prop_of_one_item[i] = prop_of_one_item[i]/len(named_dict.keys())
-
+    
     #print(cov_matrix)
     sum = 0
     for i in prop_of_one_item:
         sum+= prop_of_one_item[i]
-    #print(prop_of_one_item)
-    #print(sum)
-    # for i in object_matrix:
-    #     my_s = ""
-    #     for j in i:
-    #         my_s += str(j)+" "
-    #     print(my_s)
-    print(overall)
-    # print(comb([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]))
+    
+    #print(id_to_name)
+    for i in overall:
+        my_s = ''
+        for k in i:
+            if k == 7:
+                my_s += " "+ id_to_name[55]
+            else:
+                my_s +=" "+ id_to_name[k+1]
+        print(my_s)
+   
                 
 
 if __name__ == "__main__":
